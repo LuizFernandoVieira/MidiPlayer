@@ -37,6 +37,7 @@ public class TocadorMidi extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
 	
 	private Botoes botoes;
+	private Sliders sliders;
 
 	private Sequencer sequenciador;
 	private Sequence sequencia;
@@ -44,8 +45,6 @@ public class TocadorMidi extends JFrame implements Runnable {
 	private long inicio = 0;
 
 	private int volumeAtual = 75;
-	private JSlider sliderVolume;
-	private JProgressBar sliderProgressoInstante;
 
 	private Container painel;
 	private boolean soando = false;
@@ -54,8 +53,8 @@ public class TocadorMidi extends JFrame implements Runnable {
 		CustomizadorInterface.customiza();
 		
 		botoes = new Botoes();
+		sliders = new Sliders();
 		
-		constroiSliders();
 		constroiPaineis();
 			
 		adicionaActionListeners();	
@@ -188,7 +187,7 @@ public class TocadorMidi extends JFrame implements Runnable {
 		botoes.getBotaoPausar().setEnabled(false);
 		botoes.getBotaoParar().setEnabled(false);
 
-		sliderProgressoInstante.setValue(0);
+		sliders.getSliderProgressoInstante().setValue(0);
 		botoes.getBotaoMostradorInstante().setText(formataInstante(0));
 	}
 
@@ -204,11 +203,11 @@ public class TocadorMidi extends JFrame implements Runnable {
 				t = sequenciador.getMicrosecondPosition() / 1000000;
 				pos = (int) ((t * 100) / dur);
 				try {
-					sliderProgressoInstante.setValue(pos);
+					sliders.getSliderProgressoInstante().setValue(pos);
 					botoes.getBotaoMostradorInstante().setText(formataInstante(t));
 					retardo(1000);
 					if (t >= dur) {
-						sliderProgressoInstante.setValue(0);
+						sliders.getSliderProgressoInstante().setValue(0);
 						botoes.getBotaoMostradorInstante().setText(formataInstante(0));
 
 						botoes.getBotaoAbrir().setEnabled(true);
@@ -283,16 +282,6 @@ public class TocadorMidi extends JFrame implements Runnable {
     		return df.format(x);
     }
 	
-	private void constroiSliders() {		
-		sliderProgressoInstante = new JProgressBar();
-		sliderProgressoInstante.setPreferredSize(new Dimension(200, 20));
-		sliderProgressoInstante.setFocusable(false);
-		
-		sliderVolume = new JSlider(JSlider.HORIZONTAL, 0, 127, volumeAtual);
-		sliderVolume.setPreferredSize(new Dimension(150, 20));
-		sliderVolume.setFocusable(false);
-	}
-	
 	private void constroiPaineis() {
 		painel = getContentPane();
 		JPanel painelOperacoes = new JPanel();
@@ -314,10 +303,10 @@ public class TocadorMidi extends JFrame implements Runnable {
 		p2.add(botoes.getBotaoParar());
 		p3.add(botoes.getBotaoMostradorArquivo());
 		p4.add(botoes.getBotaoMostradorDuracao());
-		p5.add(sliderProgressoInstante);
+		p5.add(sliders.getSliderProgressoInstante());
 		p5.add(botoes.getBotaoMostradorInstante());
 		p6.add(new JLabel("Volume: "));
-		p6.add(sliderVolume);
+		p6.add(sliders.getSliderVolume());
 		p6.add(botoes.getBotaoMostradorValorVolume());
 		
 //		painelOperacoes.add(p2);
@@ -362,7 +351,7 @@ public class TocadorMidi extends JFrame implements Runnable {
 	}
 
 	private void adicionaChangeListener() {
-		sliderVolume.addChangeListener(new ChangeListener() {
+		sliders.getSliderVolume().addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
 				if (!source.getValueIsAdjusting()) {
@@ -377,6 +366,8 @@ public class TocadorMidi extends JFrame implements Runnable {
 						}
 					}
 					volumeAtual = valor;
+					botoes.setVolumeAtual(valor);
+					sliders.setVolumeAtual(valor);
 					botoes.getBotaoMostradorValorVolume().setText("" + (volumeAtual * 100) / 127 + "%");
 				}
 			}

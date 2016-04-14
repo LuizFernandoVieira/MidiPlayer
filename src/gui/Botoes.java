@@ -181,5 +181,13 @@ public class Botoes {
 	public void setBotaoMostradorValorVolume(JButton botaoMostradorValorVolume) {
 		this.botaoMostradorValorVolume = botaoMostradorValorVolume;
 	}
+
+	public int getVolumeAtual() {
+		return volumeAtual;
+	}
+
+	public void setVolumeAtual(int volumeAtual) {
+		this.volumeAtual = volumeAtual;
+	}
 	
 }
