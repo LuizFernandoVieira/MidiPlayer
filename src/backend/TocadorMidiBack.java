@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -20,6 +21,8 @@ public class TocadorMidiBack {
 
 	public static final int NOTE_ON = 0x90;
     public static final int NOTE_OFF = 0x80;
+    static final int FORMULA_DE_COMPASSO = 0x58;
+    
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 	
 	private Sequencer sequenciador;
@@ -126,6 +129,13 @@ public class TocadorMidiBack {
                 } else {
                     System.out.println("Command:" + sm.getCommand());
                 }
+            } else if (message instanceof MetaMessage){
+            	if(((MetaMessage)message).getType()==FORMULA_DE_COMPASSO){
+            		MetaMessage metaMessage = (MetaMessage) message;
+            		byte[] data = metaMessage.getData();
+                    int p = data[0];
+                    int q = data[1];
+            	}
             } else {
                 System.out.println("Other message: " + message.getClass());
             }
