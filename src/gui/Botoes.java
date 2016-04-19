@@ -20,6 +20,8 @@ public class Botoes {
 	private JButton botaoMostradorDuracao;
 	private JButton botaoMostradorInstante;
 	private JButton botaoMostradorValorVolume;
+	private JButton botaoMostradorTick;
+	private JButton botaoMostradorTempo;
 	
 	private Color corOPR = new Color(180, 220, 220);
 	private Color corARQ = new Color(230, 230, 228);
@@ -40,6 +42,8 @@ public class Botoes {
 		constroiBotaoMostradorDuracao();
 		constroiBotaoMostradorInstante();
 		constroiBotaoValorVolume();
+		constroiBotaoMostradorTick();
+		constroiBotaoMostradorTempo();
 	}
 
 	private void constroiBotaoAbrir() {
@@ -91,6 +95,16 @@ public class Botoes {
 		botaoMostradorValorVolume.setBackground(corARQ);
 		botaoMostradorValorVolume.setText("" + (volumeAtual * 100) / 127 + "%");	
 	}
+
+	private void constroiBotaoMostradorTick(){
+		botaoMostradorTick = constroiBotao("", 18);
+		botaoMostradorTick.setBackground(corARQ);
+	}
+	
+	private void constroiBotaoMostradorTempo(){
+		botaoMostradorTempo = constroiBotao("", 18);
+		botaoMostradorTempo.setBackground(corARQ);
+	}
 	
 	@SuppressWarnings("unused")
 	private JButton constroiBotao(String legenda) {
@@ -109,7 +123,7 @@ public class Botoes {
 		botao.setFont(botao.getFont().deriveFont(tamanhoFonte));
 		return botao;
 	}
-	
+
 	public JButton getBotaoAbrir() {
 		return botaoAbrir;
 	}
@@ -180,6 +194,22 @@ public class Botoes {
 
 	public void setBotaoMostradorValorVolume(JButton botaoMostradorValorVolume) {
 		this.botaoMostradorValorVolume = botaoMostradorValorVolume;
+	}
+
+	public JButton getBotaoMostradorTick() {
+		return botaoMostradorTick;
+	}
+
+	public void setBotaoMostradorTick(JButton botaoMostradorTick) {
+		this.botaoMostradorTick = botaoMostradorTick;
+	}
+
+	public JButton getBotaoMostradorTempo() {
+		return botaoMostradorTempo;
+	}
+
+	public void setBotaoMostradorTempo(JButton botaoMostradorTempo) {
+		this.botaoMostradorTempo = botaoMostradorTempo;
 	}
 
 	public int getVolumeAtual() {

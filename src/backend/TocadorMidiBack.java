@@ -4,14 +4,24 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
+
+import fachada.Fachada;
 
 public class TocadorMidiBack {
 
+	public static final int NOTE_ON = 0x90;
+    public static final int NOTE_OFF = 0x80;
+    public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+	
 	private Sequencer sequenciador;
 	private Sequence sequencia;
 	private Receiver receptor = null;
@@ -48,7 +58,14 @@ public class TocadorMidiBack {
 			long duracao = sequencia.getMicrosecondLength() / 1000000;
 			
 			sequenciador.setMicrosecondPosition(inicio);
-
+			sequenciador.getTempoInBPM();
+			sequenciador.getTickPosition();
+			
+			Sequence sequence = Fachada.obterInstancia().getSequencia();
+			Track[] tracks = sequence.getTracks();
+			
+			mostraDados(tracks[1]);
+			
 			if (sequenciador.isRunning()) {
 				duracao = sequenciador.getMicrosecondLength();
 				soando = true;
@@ -84,6 +101,37 @@ public class TocadorMidiBack {
 		inicio = 0L;
 	}
 
+	private void mostraDados(Track track){
+		for (int i=0; i < track.size(); i++) { 
+            MidiEvent event = track.get(i);
+            System.out.print("@" + event.getTick() + " ");
+            MidiMessage message = event.getMessage();
+            if (message instanceof ShortMessage) {
+                ShortMessage sm = (ShortMessage) message;
+                System.out.print("Channel: " + sm.getChannel() + " ");
+                if (sm.getCommand() == NOTE_ON) {
+                    int key = sm.getData1();
+                    int octave = (key / 12)-1;
+                    int note = key % 12;
+                    String noteName = NOTE_NAMES[note];
+                    int velocity = sm.getData2();
+                    System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+                } else if (sm.getCommand() == NOTE_OFF) {
+                    int key = sm.getData1();
+                    int octave = (key / 12)-1;
+                    int note = key % 12;
+                    String noteName = NOTE_NAMES[note];
+                    int velocity = sm.getData2();
+                    System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+                } else {
+                    System.out.println("Command:" + sm.getCommand());
+                }
+            } else {
+                System.out.println("Other message: " + message.getClass());
+            }
+        }
+	}
+	
 	public Sequencer getSequenciador() {
 		return sequenciador;
 	}

@@ -17,7 +17,7 @@ public class Paineis {
 	
 	private void constroiPaineis(JFrame jFrame, Botoes botoes, Sliders sliders) {
 		painel = jFrame.getContentPane();
-		JPanel painelOperacoes = new JPanel();
+//		JPanel painelOperacoes = new JPanel();
 		
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
@@ -25,8 +25,8 @@ public class Paineis {
 		JPanel p4 = new JPanel();
 		JPanel p5 = new JPanel();
 		JPanel p6 = new JPanel();
-
-		painelOperacoes.setLayout(new GridLayout(3, 0));
+		JPanel p7 = new JPanel();
+//		painelOperacoes.setLayout(new GridLayout(3, 0));
 		painel.setLayout(new GridLayout(7, 0));
 		
 		p1.add(botoes.getBotaoMostradorCaminho());
@@ -41,7 +41,8 @@ public class Paineis {
 		p6.add(new JLabel("Volume: "));
 		p6.add(sliders.getSliderVolume());
 		p6.add(botoes.getBotaoMostradorValorVolume());
-		
+		p7.add(botoes.getBotaoMostradorTick());
+		p7.add(botoes.getBotaoMostradorTempo());
 //		painelOperacoes.add(p2);
 //		painelOperacoes.add(p3);
 //		painelOperacoes.add(p4);
@@ -52,6 +53,7 @@ public class Paineis {
 		painel.add(p4);
 		painel.add(p5);
 		painel.add(p6);
+		painel.add(p7);
 		
 //		painel.add(painelOperacoes);
 	}

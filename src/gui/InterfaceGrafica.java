@@ -7,9 +7,14 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JSlider;
@@ -25,6 +30,7 @@ public class InterfaceGrafica extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
 	
 	private static Fachada fachada;
+	private boolean deveTocar;
 	
 	private Botoes botoes;
 	private Sliders sliders;
@@ -63,12 +69,17 @@ public class InterfaceGrafica extends JFrame implements Runnable {
 
 		while (true) {
 			if (Fachada.obterInstancia().isSoando()) {
-				dur = Fachada.obterInstancia().getSequenciador().getMicrosecondLength() / 1000000;
-				t = Fachada.obterInstancia().getSequenciador().getMicrosecondPosition() / 1000000;
+				Sequencer sequencer = Fachada.obterInstancia().getSequenciador();
+				dur = sequencer.getMicrosecondLength() / 1000000;
+				t = sequencer.getMicrosecondPosition() / 1000000;
 				pos = (int) ((t * 100) / dur);
 				try {
 					sliders.getSliderProgressoInstante().setValue(pos);
 					botoes.getBotaoMostradorInstante().setText(formataInstante(t));
+					botoes.getBotaoMostradorTick().setText("" + sequencer.getTickPosition());
+					botoes.getBotaoMostradorTempo().setText("" + sequencer.getTempoInBPM());
+					
+					
 					retardo(1000);
 					if (t >= dur) {
 						sliders.getSliderProgressoInstante().setValue(0);
@@ -94,7 +105,7 @@ public class InterfaceGrafica extends JFrame implements Runnable {
 		}
 
 	}    
-	
+		
     public String formataInstante(double t1) {
     		String inicio    = "";
 
@@ -155,7 +166,7 @@ public class InterfaceGrafica extends JFrame implements Runnable {
 		});
 
 		botoes.getBotaoTocar().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				File arqmidi = new File(botoes.getBotaoMostradorCaminho().getText());
 				tocar(arqmidi, Fachada.obterInstancia().getInicio());
 				Fachada.obterInstancia().tocar(arqmidi, Fachada.obterInstancia().getInicio());
@@ -190,7 +201,10 @@ public class InterfaceGrafica extends JFrame implements Runnable {
 					for (int i = 0; i < 16; i++) {
 						try {
 							mensagemDeVolume.setMessage(ShortMessage.CONTROL_CHANGE, i, 7, valor);
-							Fachada.obterInstancia().getReceptor().send(mensagemDeVolume, -1);
+							Receiver receptor = Fachada.obterInstancia().getReceptor();
+							if (receptor != null){
+								receptor.send(mensagemDeVolume, -1);
+							}
 						} catch (InvalidMidiDataException e1) {
 						}
 					}
