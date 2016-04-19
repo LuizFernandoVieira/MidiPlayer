@@ -67,7 +67,9 @@ public class TocadorMidiBack {
 			Sequence sequence = Fachada.obterInstancia().getSequencia();
 			Track[] tracks = sequence.getTracks();
 			
-			mostraDados(tracks[1]);
+			for(Track track : tracks){
+				mostraDados(tracks[1]);
+			}
 			
 			if (sequenciador.isRunning()) {
 				duracao = sequenciador.getMicrosecondLength();
@@ -135,6 +137,7 @@ public class TocadorMidiBack {
             		byte[] data = metaMessage.getData();
                     int p = data[0];
                     int q = data[1];
+                    System.out.println("Formula de compasso\n\tp: " + p + "\tq:" + q);
             	}
             } else {
                 System.out.println("Other message: " + message.getClass());
